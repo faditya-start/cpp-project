@@ -2,6 +2,15 @@
 #include <string>
 using namespace std;
 
+struct Student {
+    string nim;
+    string nama;
+    string jurusan;
+    int semester;
+    Student* next;
+    Student* prev;
+};
+
 void displayMenu() {
     cout << "\n=== STUDENT MANAGEMENT SYSTEM ===" << endl;
     cout << "1. Manajemen Data Mahasiswa" << endl;
