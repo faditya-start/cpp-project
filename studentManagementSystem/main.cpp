@@ -11,6 +11,13 @@ struct Student {
     Student* prev;
 };
 
+struct Attendance {
+    string nim;
+    string tanggal;
+    string status;
+    Attendance* next;
+};
+
 class DoubleLinkedList {
 private:
     Student* head;
