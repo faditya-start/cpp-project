@@ -18,6 +18,13 @@ struct Attendance {
     Attendance* next;
 };
 
+struct Guidance {
+    string nim;
+    string nama;
+    string keperluan;
+    Guidance* next;
+};
+
 class DoubleLinkedList {
 private:
     Student* head;
