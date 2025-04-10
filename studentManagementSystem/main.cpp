@@ -3,6 +3,7 @@
 #include <fstream>
 #include <vector>
 #include <ctime>
+#include <iomanip>
 using namespace std;
 
 // ===== STRUKTUR DATA =====
@@ -603,7 +604,7 @@ public:
             }
             if (nim < current->nim) {
                 current = current->left;
-            } else {
+                } else {
                 current = current->right;
             }
         }
@@ -708,7 +709,7 @@ int main() {
     string nim, nama, jurusan, tanggal, status, keperluan, kode, mataKuliah;
     int semester, sks;
     float nilai;
-    
+
     do {
         displayMenu();
         cin >> choice;
