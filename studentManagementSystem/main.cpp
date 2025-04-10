@@ -511,9 +511,61 @@ int main() {
                 } while (guidanceChoice != 4);
                 break;
             }
-            case 4:
-                cout << "\nMenu Manajemen Nilai" << endl;
+            case 4: {
+                BST gradeTree;
+                int gradeChoice;
+                string nim, mataKuliah;
+                float nilai;
+                
+                do {
+                    displayGradeMenu();
+                    cin >> gradeChoice;
+                    
+                    switch(gradeChoice) {
+                        case 1:
+                            cout << "Masukkan NIM: ";
+                            cin >> nim;
+                            cout << "Masukkan Mata Kuliah: ";
+                            cin.ignore();
+                            getline(cin, mataKuliah);
+                            cout << "Masukkan Nilai: ";
+                            cin >> nilai;
+                            gradeTree.insert(nim, mataKuliah, nilai);
+                            break;
+                        case 2:
+                            gradeTree.displayGrades();
+                            break;
+                        case 3:
+                            cout << "Masukkan NIM yang dicari: ";
+                            cin >> nim;
+                            if (Grade* found = gradeTree.search(nim)) {
+                                cout << "\nNilai ditemukan:" << endl;
+                                cout << "NIM: " << found->nim << endl;
+                                cout << "Mata Kuliah: " << found->mataKuliah << endl;
+                                cout << "Nilai: " << found->nilai << endl;
+                            } else {
+                                cout << "Nilai tidak ditemukan" << endl;
+                            }
+                            break;
+                        case 4:
+                            cout << "Masukkan NIM: ";
+                            cin >> nim;
+                            float gpa = gradeTree.calculateGPA(nim);
+                            if (gpa > 0) {
+                                cout << "IPK: " << gpa << endl;
+                            } else {
+                                cout << "Data nilai tidak ditemukan" << endl;
+                            }
+                            break;
+                        case 5:
+                            cout << "Kembali ke menu utama..." << endl;
+                            break;
+                        default:
+                            cout << "Pilihan tidak valid!" << endl;
+                    }
+                } while (gradeChoice != 5);
                 break;
+            }
             case 5:
                 cout << "\nMenu Daftar Mata Kuliah" << endl;
                 break;
