@@ -1,7 +1,13 @@
 #include <iostream>
 #include <string>
+#include <fstream>
+#include <vector>
+#include <ctime>
 using namespace std;
 
+// ===== STRUKTUR DATA =====
+
+// 1. Double Linked List untuk Data Mahasiswa
 struct Student {
     string nim;
     string nama;
@@ -9,35 +15,6 @@ struct Student {
     int semester;
     Student* next;
     Student* prev;
-};
-
-struct Attendance {
-    string nim;
-    string tanggal;
-    string status;
-    Attendance* next;
-};
-
-struct Guidance {
-    string nim;
-    string nama;
-    string keperluan;
-    Guidance* next;
-};
-
-struct Grade {
-    string nim;
-    string mataKuliah;
-    float nilai;
-    Grade* left;
-    Grade* right;
-};
-
-struct Course {
-    string kode;
-    string nama;
-    int sks;
-    Course* next;
 };
 
 class DoubleLinkedList {
@@ -121,225 +98,18 @@ public:
         delete current;
         cout << "Data mahasiswa berhasil dihapus" << endl;
     }
-};
-
-class Stack {
-private:
-    Attendance* top;
     
-public:
-    Stack() {
-        top = NULL;
-    }
-    
-    void push(string nim, string tanggal, string status) {
-        Attendance* newAttendance = new Attendance;
-        newAttendance->nim = nim;
-        newAttendance->tanggal = tanggal;
-        newAttendance->status = status;
-        newAttendance->next = top;
-        top = newAttendance;
-        cout << "Kehadiran berhasil dicatat!" << endl;
-    }
-    
-    void pop() {
-        if (isEmpty()) {
-            cout << "Tidak ada data kehadiran" << endl;
-            return;
-        }
-        Attendance* temp = top;
-        top = top->next;
-        delete temp;
-        cout << "Data kehadiran terakhir dihapus" << endl;
-    }
-    
-    bool isEmpty() {
-        return top == NULL;
-    }
-    
-    void displayAttendance() {
-        if (isEmpty()) {
-            cout << "Tidak ada data kehadiran" << endl;
-            return;
-        }
-        
-        Attendance* current = top;
-        cout << "\nDaftar Kehadiran (Terbaru ke Terlama):" << endl;
-        while (current != NULL) {
-            cout << "\nNIM: " << current->nim << endl;
-            cout << "Tanggal: " << current->tanggal << endl;
-            cout << "Status: " << current->status << endl;
-            cout << "------------------------" << endl;
-            current = current->next;
-        }
+    Student* getHead() const {
+        return head;
     }
 };
 
-class Queue {
-private:
-    Guidance* front;
-    Guidance* rear;
-    
-public:
-    Queue() {
-        front = NULL;
-        rear = NULL;
-    }
-    
-    void enqueue(string nim, string nama, string keperluan) {
-        Guidance* newGuidance = new Guidance;
-        newGuidance->nim = nim;
-        newGuidance->nama = nama;
-        newGuidance->keperluan = keperluan;
-        newGuidance->next = NULL;
-        
-        if (isEmpty()) {
-            front = rear = newGuidance;
-        } else {
-            rear->next = newGuidance;
-            rear = newGuidance;
-        }
-        cout << "Berhasil mendaftar antrian bimbingan!" << endl;
-    }
-    
-    void dequeue() {
-        if (isEmpty()) {
-            cout << "Antrian kosong" << endl;
-            return;
-        }
-        
-        Guidance* temp = front;
-        cout << "\nMemanggil mahasiswa:" << endl;
-        cout << "NIM: " << temp->nim << endl;
-        cout << "Nama: " << temp->nama << endl;
-        cout << "Keperluan: " << temp->keperluan << endl;
-        
-        front = front->next;
-        if (front == NULL) {
-            rear = NULL;
-        }
-        delete temp;
-    }
-    
-    bool isEmpty() {
-        return front == NULL;
-    }
-    
-    void displayQueue() {
-        if (isEmpty()) {
-            cout << "Antrian kosong" << endl;
-            return;
-        }
-        
-        Guidance* current = front;
-        int position = 1;
-        
-        cout << "\nDaftar Antrian Bimbingan:" << endl;
-        while (current != NULL) {
-            cout << "\nPosisi: " << position << endl;
-            cout << "NIM: " << current->nim << endl;
-            cout << "Nama: " << current->nama << endl;
-            cout << "Keperluan: " << current->keperluan << endl;
-            cout << "------------------------" << endl;
-            current = current->next;
-            position++;
-        }
-    }
-};
-
-class BST {
-private:
-    Grade* root;
-    
-    Grade* insertRecursive(Grade* node, string nim, string mataKuliah, float nilai) {
-        if (node == NULL) {
-            node = new Grade;
-            node->nim = nim;
-            node->mataKuliah = mataKuliah;
-            node->nilai = nilai;
-            node->left = node->right = NULL;
-            return node;
-        }
-        
-        if (nim < node->nim) {
-            node->left = insertRecursive(node->left, nim, mataKuliah, nilai);
-        } else if (nim > node->nim) {
-            node->right = insertRecursive(node->right, nim, mataKuliah, nilai);
-        }
-        
-        return node;
-    }
-    
-    void inorderRecursive(Grade* node) {
-        if (node != NULL) {
-            inorderRecursive(node->left);
-            cout << "\nNIM: " << node->nim << endl;
-            cout << "Mata Kuliah: " << node->mataKuliah << endl;
-            cout << "Nilai: " << node->nilai << endl;
-            cout << "------------------------" << endl;
-            inorderRecursive(node->right);
-        }
-    }
-    
-    Grade* searchRecursive(Grade* node, string nim) {
-        if (node == NULL || node->nim == nim) {
-            return node;
-        }
-        
-        if (nim < node->nim) {
-            return searchRecursive(node->left, nim);
-        }
-        
-        return searchRecursive(node->right, nim);
-    }
-    
-public:
-    BST() {
-        root = NULL;
-    }
-    
-    void insert(string nim, string mataKuliah, float nilai) {
-        root = insertRecursive(root, nim, mataKuliah, nilai);
-        cout << "Nilai berhasil ditambahkan!" << endl;
-    }
-    
-    void displayGrades() {
-        if (root == NULL) {
-            cout << "Tidak ada data nilai" << endl;
-            return;
-        }
-        
-        cout << "\nDaftar Nilai (Inorder):" << endl;
-        inorderRecursive(root);
-    }
-    
-    Grade* search(string nim) {
-        return searchRecursive(root, nim);
-    }
-    
-    float calculateGPA(string nim) {
-        Grade* current = root;
-        float totalNilai = 0;
-        int count = 0;
-        
-        while (current != NULL) {
-            if (current->nim == nim) {
-                totalNilai += current->nilai;
-                count++;
-            }
-            if (nim < current->nim) {
-                current = current->left;
-            } else {
-                current = current->right;
-            }
-        }
-        
-        if (count == 0) {
-            return 0;
-        }
-        
-        return totalNilai / count;
-    }
+// 2. Circular Linked List untuk Mata Kuliah
+struct Course {
+    string kode;
+    string nama;
+    int sks;
+    Course* next;
 };
 
 class CircularList {
@@ -441,28 +211,304 @@ public:
     }
 };
 
-void displayCourseMenu() {
-    cout << "\n=== Menu Daftar Mata Kuliah ===" << endl;
-    cout << "1. Tambah Mata Kuliah" << endl;
-    cout << "2. Tampilkan Semua Mata Kuliah" << endl;
-    cout << "3. Cari Mata Kuliah" << endl;
-    cout << "4. Hapus Mata Kuliah" << endl;
-    cout << "5. Kembali ke Menu Utama" << endl;
-    cout << "Pilihan: ";
-}
+// 3. Stack untuk Kehadiran
+struct Attendance {
+    string nim;
+    string tanggal;
+    string status;
+    Attendance* next;
+};
 
-void displayGradeMenu() {
-    cout << "\n=== Menu Manajemen Nilai ===" << endl;
-    cout << "1. Input Nilai" << endl;
-    cout << "2. Tampilkan Semua Nilai" << endl;
-    cout << "3. Cari Nilai Mahasiswa" << endl;
-    cout << "4. Hitung IPK" << endl;
-    cout << "5. Kembali ke Menu Utama" << endl;
-    cout << "Pilihan: ";
-}
+class Stack {
+private:
+    Attendance* top;
+    
+public:
+    Stack() {
+        top = NULL;
+    }
+    
+    void push(string nim, string tanggal, string status) {
+        Attendance* newAttendance = new Attendance;
+        newAttendance->nim = nim;
+        newAttendance->tanggal = tanggal;
+        newAttendance->status = status;
+        newAttendance->next = top;
+        top = newAttendance;
+        cout << "Kehadiran berhasil dicatat!" << endl;
+    }
+    
+    void pop() {
+        if (isEmpty()) {
+            cout << "Tidak ada data kehadiran" << endl;
+            return;
+        }
+        Attendance* temp = top;
+        top = top->next;
+        delete temp;
+        cout << "Data kehadiran terakhir dihapus" << endl;
+    }
+    
+    bool isEmpty() {
+        return top == NULL;
+    }
+    
+    void displayAttendance() {
+        if (isEmpty()) {
+            cout << "Tidak ada data kehadiran" << endl;
+            return;
+        }
+        
+        Attendance* current = top;
+        cout << "\nDaftar Kehadiran (Terbaru ke Terlama):" << endl;
+        while (current != NULL) {
+            cout << "\nNIM: " << current->nim << endl;
+            cout << "Tanggal: " << current->tanggal << endl;
+            cout << "Status: " << current->status << endl;
+            cout << "------------------------" << endl;
+            current = current->next;
+        }
+    }
+    
+    Attendance* getTop() const {
+        return top;
+    }
+};
+
+// 4. Queue untuk Antrian Bimbingan
+struct Guidance {
+    string nim;
+    string nama;
+    string keperluan;
+    Guidance* next;
+};
+
+class Queue {
+private:
+    Guidance* front;
+    Guidance* rear;
+    
+public:
+    Queue() {
+        front = NULL;
+        rear = NULL;
+    }
+    
+    void enqueue(string nim, string nama, string keperluan) {
+        Guidance* newGuidance = new Guidance;
+        newGuidance->nim = nim;
+        newGuidance->nama = nama;
+        newGuidance->keperluan = keperluan;
+        newGuidance->next = NULL;
+        
+        if (isEmpty()) {
+            front = rear = newGuidance;
+        } else {
+            rear->next = newGuidance;
+            rear = newGuidance;
+        }
+        cout << "Berhasil mendaftar antrian bimbingan!" << endl;
+    }
+    
+    void dequeue() {
+        if (isEmpty()) {
+            cout << "Antrian kosong" << endl;
+            return;
+        }
+        
+        Guidance* temp = front;
+        cout << "\nMemanggil mahasiswa:" << endl;
+        cout << "NIM: " << temp->nim << endl;
+        cout << "Nama: " << temp->nama << endl;
+        cout << "Keperluan: " << temp->keperluan << endl;
+        
+        front = front->next;
+        if (front == NULL) {
+            rear = NULL;
+        }
+        delete temp;
+    }
+    
+    bool isEmpty() {
+        return front == NULL;
+    }
+    
+    void displayQueue() {
+        if (isEmpty()) {
+            cout << "Antrian kosong" << endl;
+            return;
+        }
+        
+        Guidance* current = front;
+        int position = 1;
+        
+        cout << "\nDaftar Antrian Bimbingan:" << endl;
+        while (current != NULL) {
+            cout << "\nPosisi: " << position << endl;
+            cout << "NIM: " << current->nim << endl;
+            cout << "Nama: " << current->nama << endl;
+            cout << "Keperluan: " << current->keperluan << endl;
+            cout << "------------------------" << endl;
+            current = current->next;
+            position++;
+        }
+    }
+    
+    Guidance* getFront() const {
+        return front;
+    }
+};
+
+// 5. Binary Search Tree untuk Nilai
+struct Grade {
+    string nim;
+    string mataKuliah;
+    float nilai;
+    Grade* left;
+    Grade* right;
+};
+
+class BST {
+private:
+    Grade* root;
+    
+    Grade* insertRecursive(Grade* node, string nim, string mataKuliah, float nilai) {
+        if (node == NULL) {
+            node = new Grade;
+            node->nim = nim;
+            node->mataKuliah = mataKuliah;
+            node->nilai = nilai;
+            node->left = node->right = NULL;
+            return node;
+        }
+        
+        if (nim < node->nim) {
+            node->left = insertRecursive(node->left, nim, mataKuliah, nilai);
+        } else if (nim > node->nim) {
+            node->right = insertRecursive(node->right, nim, mataKuliah, nilai);
+        }
+        
+        return node;
+    }
+    
+    void inorderRecursive(Grade* node) {
+        if (node != NULL) {
+            inorderRecursive(node->left);
+            cout << "\nNIM: " << node->nim << endl;
+            cout << "Mata Kuliah: " << node->mataKuliah << endl;
+            cout << "Nilai: " << node->nilai << endl;
+            cout << "------------------------" << endl;
+            inorderRecursive(node->right);
+        }
+    }
+    
+    void preorderRecursive(Grade* node) {
+        if (node != NULL) {
+            cout << "\nNIM: " << node->nim << endl;
+            cout << "Mata Kuliah: " << node->mataKuliah << endl;
+            cout << "Nilai: " << node->nilai << endl;
+            cout << "------------------------" << endl;
+            preorderRecursive(node->left);
+            preorderRecursive(node->right);
+        }
+    }
+    
+    void postorderRecursive(Grade* node) {
+        if (node != NULL) {
+            postorderRecursive(node->left);
+            postorderRecursive(node->right);
+            cout << "\nNIM: " << node->nim << endl;
+            cout << "Mata Kuliah: " << node->mataKuliah << endl;
+            cout << "Nilai: " << node->nilai << endl;
+            cout << "------------------------" << endl;
+        }
+    }
+    
+    Grade* searchRecursive(Grade* node, string nim) {
+        if (node == NULL || node->nim == nim) {
+            return node;
+        }
+        
+        if (nim < node->nim) {
+            return searchRecursive(node->left, nim);
+        }
+        
+        return searchRecursive(node->right, nim);
+    }
+    
+public:
+    BST() {
+        root = NULL;
+    }
+    
+    void insert(string nim, string mataKuliah, float nilai) {
+        root = insertRecursive(root, nim, mataKuliah, nilai);
+        cout << "Nilai berhasil ditambahkan!" << endl;
+    }
+    
+    void displayGradesInorder() {
+        if (root == NULL) {
+            cout << "Tidak ada data nilai" << endl;
+            return;
+        }
+        
+        cout << "\nDaftar Nilai (Inorder):" << endl;
+        inorderRecursive(root);
+    }
+    
+    void displayGradesPreorder() {
+        if (root == NULL) {
+            cout << "Tidak ada data nilai" << endl;
+            return;
+        }
+        
+        cout << "\nDaftar Nilai (Preorder):" << endl;
+        preorderRecursive(root);
+    }
+    
+    void displayGradesPostorder() {
+        if (root == NULL) {
+            cout << "Tidak ada data nilai" << endl;
+            return;
+        }
+        
+        cout << "\nDaftar Nilai (Postorder):" << endl;
+        postorderRecursive(root);
+    }
+    
+    Grade* search(string nim) {
+        return searchRecursive(root, nim);
+    }
+    
+    float calculateGPA(string nim) {
+        Grade* current = root;
+        float totalNilai = 0;
+        int count = 0;
+        
+        while (current != NULL) {
+            if (current->nim == nim) {
+                totalNilai += current->nilai;
+                count++;
+            }
+            if (nim < current->nim) {
+                current = current->left;
+            } else {
+                current = current->right;
+            }
+        }
+        
+        if (count == 0) {
+            return 0;
+        }
+        
+        return totalNilai / count;
+    }
+};
+
+// ===== MENU DISPLAY =====
 
 void displayStudentMenu() {
-    cout << "\n=== Menu Manajemen Mahasiswa ===" << endl;
+    cout << "\n=== Menu Manajemen Mahasiswa (Double Linked List) ===" << endl;
     cout << "1. Tambah Mahasiswa" << endl;
     cout << "2. Tampilkan Semua Mahasiswa" << endl;
     cout << "3. Cari Mahasiswa" << endl;
@@ -471,8 +517,18 @@ void displayStudentMenu() {
     cout << "Pilihan: ";
 }
 
+void displayCourseMenu() {
+    cout << "\n=== Menu Daftar Mata Kuliah (Circular Linked List) ===" << endl;
+    cout << "1. Tambah Mata Kuliah" << endl;
+    cout << "2. Tampilkan Semua Mata Kuliah" << endl;
+    cout << "3. Cari Mata Kuliah" << endl;
+    cout << "4. Hapus Mata Kuliah" << endl;
+    cout << "5. Kembali ke Menu Utama" << endl;
+    cout << "Pilihan: ";
+}
+
 void displayAttendanceMenu() {
-    cout << "\n=== Menu Sistem Kehadiran ===" << endl;
+    cout << "\n=== Menu Sistem Kehadiran (Stack) ===" << endl;
     cout << "1. Catat Kehadiran" << endl;
     cout << "2. Tampilkan Kehadiran" << endl;
     cout << "3. Hapus Data Terakhir" << endl;
@@ -481,7 +537,7 @@ void displayAttendanceMenu() {
 }
 
 void displayGuidanceMenu() {
-    cout << "\n=== Menu Antrian Bimbingan ===" << endl;
+    cout << "\n=== Menu Antrian Bimbingan (Queue) ===" << endl;
     cout << "1. Daftar Antrian" << endl;
     cout << "2. Panggil Antrian" << endl;
     cout << "3. Lihat Antrian" << endl;
@@ -489,34 +545,54 @@ void displayGuidanceMenu() {
     cout << "Pilihan: ";
 }
 
+void displayGradeMenu() {
+    cout << "\n=== Menu Manajemen Nilai (Binary Search Tree) ===" << endl;
+    cout << "1. Input Nilai" << endl;
+    cout << "2. Tampilkan Nilai (Inorder)" << endl;
+    cout << "3. Tampilkan Nilai (Preorder)" << endl;
+    cout << "4. Tampilkan Nilai (Postorder)" << endl;
+    cout << "5. Cari Nilai Mahasiswa" << endl;
+    cout << "6. Hitung IPK" << endl;
+    cout << "7. Kembali ke Menu Utama" << endl;
+    cout << "Pilihan: ";
+}
+
 void displayMenu() {
     cout << "\n=== STUDENT MANAGEMENT SYSTEM ===" << endl;
-    cout << "1. Manajemen Data Mahasiswa" << endl;
-    cout << "2. Sistem Kehadiran" << endl;
-    cout << "3. Antrian Bimbingan" << endl;
-    cout << "4. Manajemen Nilai" << endl;
-    cout << "5. Daftar Mata Kuliah" << endl;
+    cout << "1. Manajemen Data Mahasiswa (Double Linked List)" << endl;
+    cout << "2. Sistem Kehadiran (Stack)" << endl;
+    cout << "3. Antrian Bimbingan (Queue)" << endl;
+    cout << "4. Manajemen Nilai (Binary Search Tree)" << endl;
+    cout << "5. Daftar Mata Kuliah (Circular Linked List)" << endl;
     cout << "0. Keluar" << endl;
     cout << "Pilihan: ";
 }
 
+// ===== MAIN FUNCTION =====
+
 int main() {
     DoubleLinkedList studentList;
-    int choice, studentChoice;
-    string nim, nama, jurusan;
-    int semester;
-
+    Stack attendanceStack;
+    Queue guidanceQueue;
+    BST gradeTree;
+    CircularList courseList;
+    
+    int choice, subChoice;
+    string nim, nama, jurusan, tanggal, status, keperluan, kode, mataKuliah;
+    int semester, sks;
+    float nilai;
+    
     do {
         displayMenu();
         cin >> choice;
         
         switch(choice) {
-            case 1:
+            case 1: // Manajemen Data Mahasiswa (Double Linked List)
                 do {
                     displayStudentMenu();
-                    cin >> studentChoice;
+                    cin >> subChoice;
                     
-                    switch(studentChoice) {
+                    switch(subChoice) {
                         case 1:
                             cout << "Masukkan NIM: ";
                             cin >> nim;
@@ -556,18 +632,15 @@ int main() {
                         default:
                             cout << "Pilihan tidak valid!" << endl;
                     }
-                } while (studentChoice != 5);
+                } while (subChoice != 5);
                 break;
-            case 2: {
-                Stack attendanceStack;
-                int attendanceChoice;
-                string nim, tanggal, status;
                 
+            case 2: // Sistem Kehadiran (Stack)
                 do {
                     displayAttendanceMenu();
-                    cin >> attendanceChoice;
+                    cin >> subChoice;
                     
-                    switch(attendanceChoice) {
+                    switch(subChoice) {
                         case 1:
                             cout << "Masukkan NIM: ";
                             cin >> nim;
@@ -589,19 +662,15 @@ int main() {
                         default:
                             cout << "Pilihan tidak valid!" << endl;
                     }
-                } while (attendanceChoice != 4);
+                } while (subChoice != 4);
                 break;
-            }
-            case 3: {
-                Queue guidanceQueue;
-                int guidanceChoice;
-                string nim, nama, keperluan;
                 
+            case 3: // Antrian Bimbingan (Queue)
                 do {
                     displayGuidanceMenu();
-                    cin >> guidanceChoice;
+                    cin >> subChoice;
                     
-                    switch(guidanceChoice) {
+                    switch(subChoice) {
                         case 1:
                             cout << "Masukkan NIM: ";
                             cin >> nim;
@@ -624,20 +693,15 @@ int main() {
                         default:
                             cout << "Pilihan tidak valid!" << endl;
                     }
-                } while (guidanceChoice != 4);
+                } while (subChoice != 4);
                 break;
-            }
-            case 4: {
-                BST gradeTree;
-                int gradeChoice;
-                string nim, mataKuliah;
-                float nilai;
                 
+            case 4: // Manajemen Nilai (Binary Search Tree)
                 do {
                     displayGradeMenu();
-                    cin >> gradeChoice;
+                    cin >> subChoice;
                     
-                    switch(gradeChoice) {
+                    switch(subChoice) {
                         case 1:
                             cout << "Masukkan NIM: ";
                             cin >> nim;
@@ -649,9 +713,15 @@ int main() {
                             gradeTree.insert(nim, mataKuliah, nilai);
                             break;
                         case 2:
-                            gradeTree.displayGrades();
+                            gradeTree.displayGradesInorder();
                             break;
                         case 3:
+                            gradeTree.displayGradesPreorder();
+                            break;
+                        case 4:
+                            gradeTree.displayGradesPostorder();
+                            break;
+                        case 5:
                             cout << "Masukkan NIM yang dicari: ";
                             cin >> nim;
                             if (Grade* found = gradeTree.search(nim)) {
@@ -663,7 +733,7 @@ int main() {
                                 cout << "Nilai tidak ditemukan" << endl;
                             }
                             break;
-                        case 4:
+                        case 6:
                             cout << "Masukkan NIM: ";
                             cin >> nim;
                             float gpa = gradeTree.calculateGPA(nim);
@@ -673,26 +743,21 @@ int main() {
                                 cout << "Data nilai tidak ditemukan" << endl;
                             }
                             break;
-                        case 5:
+                        case 7:
                             cout << "Kembali ke menu utama..." << endl;
                             break;
                         default:
                             cout << "Pilihan tidak valid!" << endl;
                     }
-                } while (gradeChoice != 5);
+                } while (subChoice != 7);
                 break;
-            }
-            case 5: {
-                CircularList courseList;
-                int courseChoice;
-                string kode, nama;
-                int sks;
                 
+            case 5: // Daftar Mata Kuliah (Circular Linked List)
                 do {
                     displayCourseMenu();
-                    cin >> courseChoice;
+                    cin >> subChoice;
                     
-                    switch(courseChoice) {
+                    switch(subChoice) {
                         case 1:
                             cout << "Masukkan Kode MK: ";
                             cin >> kode;
@@ -729,12 +794,13 @@ int main() {
                         default:
                             cout << "Pilihan tidak valid!" << endl;
                     }
-                } while (courseChoice != 5);
+                } while (subChoice != 5);
                 break;
-            }
+                
             case 0:
                 cout << "\nTerima kasih!" << endl;
                 break;
+                
             default:
                 cout << "\nPilihan tidak valid!" << endl;
         }
