@@ -101,6 +101,67 @@ public:
     }
 };
 
+class Stack {
+private:
+    Attendance* top;
+    
+public:
+    Stack() {
+        top = NULL;
+    }
+    
+    void push(string nim, string tanggal, string status) {
+        Attendance* newAttendance = new Attendance;
+        newAttendance->nim = nim;
+        newAttendance->tanggal = tanggal;
+        newAttendance->status = status;
+        newAttendance->next = top;
+        top = newAttendance;
+        cout << "Kehadiran berhasil dicatat!" << endl;
+    }
+    
+    void pop() {
+        if (isEmpty()) {
+            cout << "Tidak ada data kehadiran" << endl;
+            return;
+        }
+        Attendance* temp = top;
+        top = top->next;
+        delete temp;
+        cout << "Data kehadiran terakhir dihapus" << endl;
+    }
+    
+    bool isEmpty() {
+        return top == NULL;
+    }
+    
+    void displayAttendance() {
+        if (isEmpty()) {
+            cout << "Tidak ada data kehadiran" << endl;
+            return;
+        }
+        
+        Attendance* current = top;
+        cout << "\nDaftar Kehadiran (Terbaru ke Terlama):" << endl;
+        while (current != NULL) {
+            cout << "\nNIM: " << current->nim << endl;
+            cout << "Tanggal: " << current->tanggal << endl;
+            cout << "Status: " << current->status << endl;
+            cout << "------------------------" << endl;
+            current = current->next;
+        }
+    }
+};
+
+void displayAttendanceMenu() {
+    cout << "\n=== Menu Sistem Kehadiran ===" << endl;
+    cout << "1. Catat Kehadiran" << endl;
+    cout << "2. Tampilkan Kehadiran" << endl;
+    cout << "3. Hapus Data Terakhir" << endl;
+    cout << "4. Kembali ke Menu Utama" << endl;
+    cout << "Pilihan: ";
+}
+
 void displayMenu() {
     cout << "\n=== STUDENT MANAGEMENT SYSTEM ===" << endl;
     cout << "1. Manajemen Data Mahasiswa" << endl;
@@ -170,9 +231,40 @@ int main() {
                     }
                 } while (studentChoice != 5);
                 break;
-            case 2:
-                cout << "\nMenu Sistem Kehadiran" << endl;
+           case 2: {
+                Stack attendanceStack;
+                int attendanceChoice;
+                string nim, tanggal, status;
+                
+                do {
+                    displayAttendanceMenu();
+                    cin >> attendanceChoice;
+                    
+                    switch(attendanceChoice) {
+                        case 1:
+                            cout << "Masukkan NIM: ";
+                            cin >> nim;
+                            cout << "Masukkan Tanggal (DD/MM/YYYY): ";
+                            cin >> tanggal;
+                            cout << "Masukkan Status (Hadir/Tidak Hadir): ";
+                            cin >> status;
+                            attendanceStack.push(nim, tanggal, status);
+                            break;
+                        case 2:
+                            attendanceStack.displayAttendance();
+                            break;
+                        case 3:
+                            attendanceStack.pop();
+                            break;
+                        case 4:
+                            cout << "Kembali ke menu utama..." << endl;
+                            break;
+                        default:
+                            cout << "Pilihan tidak valid!" << endl;
+                    }
+                } while (attendanceChoice != 4);
                 break;
+            }
             case 3:
                 cout << "\nMenu Antrian Bimbingan" << endl;
                 break;
