@@ -33,6 +33,13 @@ struct Grade {
     Grade* right;
 };
 
+struct Course {
+    string kode;
+    string nama;
+    int sks;
+    Course* next;
+};
+
 class DoubleLinkedList {
 private:
     Student* head;
