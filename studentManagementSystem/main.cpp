@@ -240,6 +240,111 @@ public:
     }
 };
 
+class BST {
+private:
+    Grade* root;
+    
+    Grade* insertRecursive(Grade* node, string nim, string mataKuliah, float nilai) {
+        if (node == NULL) {
+            node = new Grade;
+            node->nim = nim;
+            node->mataKuliah = mataKuliah;
+            node->nilai = nilai;
+            node->left = node->right = NULL;
+            return node;
+        }
+        
+        if (nim < node->nim) {
+            node->left = insertRecursive(node->left, nim, mataKuliah, nilai);
+        } else if (nim > node->nim) {
+            node->right = insertRecursive(node->right, nim, mataKuliah, nilai);
+        }
+        
+        return node;
+    }
+    
+    void inorderRecursive(Grade* node) {
+        if (node != NULL) {
+            inorderRecursive(node->left);
+            cout << "\nNIM: " << node->nim << endl;
+            cout << "Mata Kuliah: " << node->mataKuliah << endl;
+            cout << "Nilai: " << node->nilai << endl;
+            cout << "------------------------" << endl;
+            inorderRecursive(node->right);
+        }
+    }
+    
+    Grade* searchRecursive(Grade* node, string nim) {
+        if (node == NULL || node->nim == nim) {
+            return node;
+        }
+        
+        if (nim < node->nim) {
+            return searchRecursive(node->left, nim);
+        }
+        
+        return searchRecursive(node->right, nim);
+    }
+    
+public:
+    BST() {
+        root = NULL;
+    }
+    
+    void insert(string nim, string mataKuliah, float nilai) {
+        root = insertRecursive(root, nim, mataKuliah, nilai);
+        cout << "Nilai berhasil ditambahkan!" << endl;
+    }
+    
+    void displayGrades() {
+        if (root == NULL) {
+            cout << "Tidak ada data nilai" << endl;
+            return;
+        }
+        
+        cout << "\nDaftar Nilai (Inorder):" << endl;
+        inorderRecursive(root);
+    }
+    
+    Grade* search(string nim) {
+        return searchRecursive(root, nim);
+    }
+    
+    float calculateGPA(string nim) {
+        Grade* current = root;
+        float totalNilai = 0;
+        int count = 0;
+        
+        while (current != NULL) {
+            if (current->nim == nim) {
+                totalNilai += current->nilai;
+                count++;
+            }
+            if (nim < current->nim) {
+                current = current->left;
+            } else {
+                current = current->right;
+            }
+        }
+        
+        if (count == 0) {
+            return 0;
+        }
+        
+        return totalNilai / count;
+    }
+};
+
+void displayGradeMenu() {
+    cout << "\n=== Menu Manajemen Nilai ===" << endl;
+    cout << "1. Input Nilai" << endl;
+    cout << "2. Tampilkan Semua Nilai" << endl;
+    cout << "3. Cari Nilai Mahasiswa" << endl;
+    cout << "4. Hitung IPK" << endl;
+    cout << "5. Kembali ke Menu Utama" << endl;
+    cout << "Pilihan: ";
+}
+
 void displayStudentMenu() {
     cout << "\n=== Menu Manajemen Mahasiswa ===" << endl;
     cout << "1. Tambah Mahasiswa" << endl;
