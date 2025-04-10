@@ -160,6 +160,87 @@ public:
     }
 };
 
+class Queue {
+private:
+    Guidance* front;
+    Guidance* rear;
+    
+public:
+    Queue() {
+        front = NULL;
+        rear = NULL;
+    }
+    
+    void enqueue(string nim, string nama, string keperluan) {
+        Guidance* newGuidance = new Guidance;
+        newGuidance->nim = nim;
+        newGuidance->nama = nama;
+        newGuidance->keperluan = keperluan;
+        newGuidance->next = NULL;
+        
+        if (isEmpty()) {
+            front = rear = newGuidance;
+        } else {
+            rear->next = newGuidance;
+            rear = newGuidance;
+        }
+        cout << "Berhasil mendaftar antrian bimbingan!" << endl;
+    }
+    
+    void dequeue() {
+        if (isEmpty()) {
+            cout << "Antrian kosong" << endl;
+            return;
+        }
+        
+        Guidance* temp = front;
+        cout << "\nMemanggil mahasiswa:" << endl;
+        cout << "NIM: " << temp->nim << endl;
+        cout << "Nama: " << temp->nama << endl;
+        cout << "Keperluan: " << temp->keperluan << endl;
+        
+        front = front->next;
+        if (front == NULL) {
+            rear = NULL;
+        }
+        delete temp;
+    }
+    
+    bool isEmpty() {
+        return front == NULL;
+    }
+    
+    void displayQueue() {
+        if (isEmpty()) {
+            cout << "Antrian kosong" << endl;
+            return;
+        }
+        
+        Guidance* current = front;
+        int position = 1;
+        
+        cout << "\nDaftar Antrian Bimbingan:" << endl;
+        while (current != NULL) {
+            cout << "\nPosisi: " << position << endl;
+            cout << "NIM: " << current->nim << endl;
+            cout << "Nama: " << current->nama << endl;
+            cout << "Keperluan: " << current->keperluan << endl;
+            cout << "------------------------" << endl;
+            current = current->next;
+            position++;
+        }
+    }
+};
+
+void displayGuidanceMenu() {
+    cout << "\n=== Menu Antrian Bimbingan ===" << endl;
+    cout << "1. Daftar Antrian" << endl;
+    cout << "2. Panggil Antrian" << endl;
+    cout << "3. Lihat Antrian" << endl;
+    cout << "4. Kembali ke Menu Utama" << endl;
+    cout << "Pilihan: ";
+}
+
 void displayAttendanceMenu() {
     cout << "\n=== Menu Sistem Kehadiran ===" << endl;
     cout << "1. Catat Kehadiran" << endl;
