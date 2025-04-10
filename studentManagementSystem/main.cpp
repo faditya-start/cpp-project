@@ -701,6 +701,8 @@ int main() {
                     displayGradeMenu();
                     cin >> subChoice;
                     
+                    float gpa;
+                    
                     switch(subChoice) {
                         case 1:
                             cout << "Masukkan NIM: ";
@@ -736,7 +738,7 @@ int main() {
                         case 6:
                             cout << "Masukkan NIM: ";
                             cin >> nim;
-                            float gpa = gradeTree.calculateGPA(nim);
+                            gpa = gradeTree.calculateGPA(nim);
                             if (gpa > 0) {
                                 cout << "IPK: " << gpa << endl;
                             } else {
