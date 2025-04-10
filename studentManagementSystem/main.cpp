@@ -342,6 +342,115 @@ public:
     }
 };
 
+class CircularList {
+private:
+    Course* head;
+    
+public:
+    CircularList() {
+        head = NULL;
+    }
+    
+    void insertCourse(string kode, string nama, int sks) {
+        Course* newCourse = new Course;
+        newCourse->kode = kode;
+        newCourse->nama = nama;
+        newCourse->sks = sks;
+        
+        if (head == NULL) {
+            head = newCourse;
+            newCourse->next = head;
+        } else {
+            Course* current = head;
+            while (current->next != head) {
+                current = current->next;
+            }
+            current->next = newCourse;
+            newCourse->next = head;
+        }
+        cout << "Mata kuliah berhasil ditambahkan!" << endl;
+    }
+    
+    void deleteCourse(string kode) {
+        if (head == NULL) {
+            cout << "Tidak ada mata kuliah" << endl;
+            return;
+        }
+        
+        Course* current = head;
+        Course* prev = NULL;
+        
+        do {
+            if (current->kode == kode) {
+                if (current == head) {
+                    if (current->next == head) {
+                        head = NULL;
+                    } else {
+                        Course* last = head;
+                        while (last->next != head) {
+                            last = last->next;
+                        }
+                        head = current->next;
+                        last->next = head;
+                    }
+                } else {
+                    prev->next = current->next;
+                }
+                delete current;
+                cout << "Mata kuliah berhasil dihapus" << endl;
+                return;
+            }
+            prev = current;
+            current = current->next;
+        } while (current != head);
+        
+        cout << "Mata kuliah tidak ditemukan" << endl;
+    }
+    
+    void displayCourses() {
+        if (head == NULL) {
+            cout << "Tidak ada mata kuliah" << endl;
+            return;
+        }
+        
+        Course* current = head;
+        cout << "\nDaftar Mata Kuliah:" << endl;
+        do {
+            cout << "\nKode: " << current->kode << endl;
+            cout << "Nama: " << current->nama << endl;
+            cout << "SKS: " << current->sks << endl;
+            cout << "------------------------" << endl;
+            current = current->next;
+        } while (current != head);
+    }
+    
+    Course* searchCourse(string kode) {
+        if (head == NULL) {
+            return NULL;
+        }
+        
+        Course* current = head;
+        do {
+            if (current->kode == kode) {
+                return current;
+            }
+            current = current->next;
+        } while (current != head);
+        
+        return NULL;
+    }
+};
+
+void displayCourseMenu() {
+    cout << "\n=== Menu Daftar Mata Kuliah ===" << endl;
+    cout << "1. Tambah Mata Kuliah" << endl;
+    cout << "2. Tampilkan Semua Mata Kuliah" << endl;
+    cout << "3. Cari Mata Kuliah" << endl;
+    cout << "4. Hapus Mata Kuliah" << endl;
+    cout << "5. Kembali ke Menu Utama" << endl;
+    cout << "Pilihan: ";
+}
+
 void displayGradeMenu() {
     cout << "\n=== Menu Manajemen Nilai ===" << endl;
     cout << "1. Input Nilai" << endl;
