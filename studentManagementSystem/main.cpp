@@ -232,12 +232,13 @@ public:
     }
 };
 
-void displayGuidanceMenu() {
-    cout << "\n=== Menu Antrian Bimbingan ===" << endl;
-    cout << "1. Daftar Antrian" << endl;
-    cout << "2. Panggil Antrian" << endl;
-    cout << "3. Lihat Antrian" << endl;
-    cout << "4. Kembali ke Menu Utama" << endl;
+void displayStudentMenu() {
+    cout << "\n=== Menu Manajemen Mahasiswa ===" << endl;
+    cout << "1. Tambah Mahasiswa" << endl;
+    cout << "2. Tampilkan Semua Mahasiswa" << endl;
+    cout << "3. Cari Mahasiswa" << endl;
+    cout << "4. Hapus Mahasiswa" << endl;
+    cout << "5. Kembali ke Menu Utama" << endl;
     cout << "Pilihan: ";
 }
 
@@ -246,6 +247,15 @@ void displayAttendanceMenu() {
     cout << "1. Catat Kehadiran" << endl;
     cout << "2. Tampilkan Kehadiran" << endl;
     cout << "3. Hapus Data Terakhir" << endl;
+    cout << "4. Kembali ke Menu Utama" << endl;
+    cout << "Pilihan: ";
+}
+
+void displayGuidanceMenu() {
+    cout << "\n=== Menu Antrian Bimbingan ===" << endl;
+    cout << "1. Daftar Antrian" << endl;
+    cout << "2. Panggil Antrian" << endl;
+    cout << "3. Lihat Antrian" << endl;
     cout << "4. Kembali ke Menu Utama" << endl;
     cout << "Pilihan: ";
 }
@@ -319,7 +329,7 @@ int main() {
                     }
                 } while (studentChoice != 5);
                 break;
-           case 2: {
+            case 2: {
                 Stack attendanceStack;
                 int attendanceChoice;
                 string nim, tanggal, status;
@@ -353,9 +363,41 @@ int main() {
                 } while (attendanceChoice != 4);
                 break;
             }
-            case 3:
-                cout << "\nMenu Antrian Bimbingan" << endl;
+            case 3: {
+                Queue guidanceQueue;
+                int guidanceChoice;
+                string nim, nama, keperluan;
+                
+                do {
+                    displayGuidanceMenu();
+                    cin >> guidanceChoice;
+                    
+                    switch(guidanceChoice) {
+                        case 1:
+                            cout << "Masukkan NIM: ";
+                            cin >> nim;
+                            cout << "Masukkan Nama: ";
+                            cin.ignore();
+                            getline(cin, nama);
+                            cout << "Masukkan Keperluan: ";
+                            getline(cin, keperluan);
+                            guidanceQueue.enqueue(nim, nama, keperluan);
+                            break;
+                        case 2:
+                            guidanceQueue.dequeue();
+                            break;
+                        case 3:
+                            guidanceQueue.displayQueue();
+                            break;
+                        case 4:
+                            cout << "Kembali ke menu utama..." << endl;
+                            break;
+                        default:
+                            cout << "Pilihan tidak valid!" << endl;
+                    }
+                } while (guidanceChoice != 4);
                 break;
+            }
             case 4:
                 cout << "\nMenu Manajemen Nilai" << endl;
                 break;
