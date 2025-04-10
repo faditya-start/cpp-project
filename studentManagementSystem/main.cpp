@@ -166,7 +166,7 @@ public:
                 } else {
                     prev->next = current->next;
                 }
-                delete current;
+                delete current; 
                 cout << "Mata kuliah berhasil dihapus" << endl;
                 return;
             }
@@ -364,6 +364,7 @@ struct Grade {
     string nim;
     string mataKuliah;
     float nilai;
+    int sks;
     Grade* left;
     Grade* right;
 };
@@ -372,20 +373,37 @@ class BST {
 private:
     Grade* root;
     
-    Grade* insertRecursive(Grade* node, string nim, string mataKuliah, float nilai) {
+    string getGrade(float nilai) {
+        if (nilai >= 85) return "A";
+        else if (nilai >= 75) return "B";
+        else if (nilai >= 65) return "C";
+        else if (nilai >= 50) return "D";
+        else return "E";
+    }
+    
+    float getGradePoint(string grade) {
+        if (grade == "A") return 4.0;
+        else if (grade == "B") return 3.0;
+        else if (grade == "C") return 2.0;
+        else if (grade == "D") return 1.0;
+        else return 0.0;
+    }
+    
+    Grade* insertRecursive(Grade* node, string nim, string mataKuliah, float nilai, int sks) {
         if (node == NULL) {
             node = new Grade;
             node->nim = nim;
             node->mataKuliah = mataKuliah;
             node->nilai = nilai;
+            node->sks = sks;
             node->left = node->right = NULL;
             return node;
         }
         
         if (nim < node->nim) {
-            node->left = insertRecursive(node->left, nim, mataKuliah, nilai);
+            node->left = insertRecursive(node->left, nim, mataKuliah, nilai, sks);
         } else if (nim > node->nim) {
-            node->right = insertRecursive(node->right, nim, mataKuliah, nilai);
+            node->right = insertRecursive(node->right, nim, mataKuliah, nilai, sks);
         }
         
         return node;
@@ -396,7 +414,8 @@ private:
             inorderRecursive(node->left);
             cout << "\nNIM: " << node->nim << endl;
             cout << "Mata Kuliah: " << node->mataKuliah << endl;
-            cout << "Nilai: " << node->nilai << endl;
+            cout << "Nilai: " << node->nilai << " (" << getGrade(node->nilai) << ")" << endl;
+            cout << "SKS: " << node->sks << endl;
             cout << "------------------------" << endl;
             inorderRecursive(node->right);
         }
@@ -406,7 +425,8 @@ private:
         if (node != NULL) {
             cout << "\nNIM: " << node->nim << endl;
             cout << "Mata Kuliah: " << node->mataKuliah << endl;
-            cout << "Nilai: " << node->nilai << endl;
+            cout << "Nilai: " << node->nilai << " (" << getGrade(node->nilai) << ")" << endl;
+            cout << "SKS: " << node->sks << endl;
             cout << "------------------------" << endl;
             preorderRecursive(node->left);
             preorderRecursive(node->right);
@@ -419,7 +439,8 @@ private:
             postorderRecursive(node->right);
             cout << "\nNIM: " << node->nim << endl;
             cout << "Mata Kuliah: " << node->mataKuliah << endl;
-            cout << "Nilai: " << node->nilai << endl;
+            cout << "Nilai: " << node->nilai << " (" << getGrade(node->nilai) << ")" << endl;
+            cout << "SKS: " << node->sks << endl;
             cout << "------------------------" << endl;
         }
     }
@@ -436,13 +457,69 @@ private:
         return searchRecursive(node->right, nim);
     }
     
+    Grade* findMin(Grade* node) {
+        if (node == NULL) return NULL;
+        while (node->left != NULL) {
+            node = node->left;
+        }
+        return node;
+    }
+    
+    Grade* deleteRecursive(Grade* node, string nim, string mataKuliah) {
+        if (node == NULL) return NULL;
+        
+        if (nim < node->nim) {
+            node->left = deleteRecursive(node->left, nim, mataKuliah);
+        } else if (nim > node->nim) {
+            node->right = deleteRecursive(node->right, nim, mataKuliah);
+        } else {
+            if (node->mataKuliah == mataKuliah) {
+                // Node dengan satu atau tidak ada child
+                if (node->left == NULL) {
+                    Grade* temp = node->right;
+                    delete node;
+                    return temp;
+                } else if (node->right == NULL) {
+                    Grade* temp = node->left;
+                    delete node;
+                    return temp;
+                }
+                
+                // Node dengan dua child
+                Grade* temp = findMin(node->right);
+                node->nim = temp->nim;
+                node->mataKuliah = temp->mataKuliah;
+                node->nilai = temp->nilai;
+                node->sks = temp->sks;
+                node->right = deleteRecursive(node->right, temp->nim, temp->mataKuliah);
+            }
+        }
+        return node;
+    }
+    
+    void exportToFileRecursive(Grade* node, ofstream& file) {
+        if (node != NULL) {
+            exportToFileRecursive(node->left, file);
+            file << node->nim << "," << node->mataKuliah << "," << node->nilai << "," << node->sks << "\n";
+            exportToFileRecursive(node->right, file);
+        }
+    }
+    
 public:
     BST() {
         root = NULL;
     }
     
-    void insert(string nim, string mataKuliah, float nilai) {
-        root = insertRecursive(root, nim, mataKuliah, nilai);
+    void insert(string nim, string mataKuliah, float nilai, int sks) {
+        if (nilai < 0 || nilai > 100) {
+            cout << "Error: Nilai harus antara 0-100!" << endl;
+            return;
+        }
+        if (sks <= 0) {
+            cout << "Error: SKS harus lebih dari 0!" << endl;
+            return;
+        }
+        root = insertRecursive(root, nim, mataKuliah, nilai, sks);
         cout << "Nilai berhasil ditambahkan!" << endl;
     }
     
@@ -480,15 +557,49 @@ public:
         return searchRecursive(root, nim);
     }
     
+    void deleteGrade(string nim, string mataKuliah) {
+        root = deleteRecursive(root, nim, mataKuliah);
+        cout << "Nilai berhasil dihapus!" << endl;
+    }
+    
+    void displayGradesByNIM(string nim) {
+        if (root == NULL) {
+            cout << "Tidak ada data nilai" << endl;
+            return;
+        }
+        
+        bool found = false;
+        cout << "\nDaftar Nilai Mahasiswa dengan NIM " << nim << ":" << endl;
+        displayGradesByNIMRecursive(root, nim, found);
+        
+        if (!found) {
+            cout << "Tidak ditemukan nilai untuk NIM " << nim << endl;
+        }
+    }
+    
+    void displayGradesByNIMRecursive(Grade* node, string nim, bool& found) {
+        if (node != NULL) {
+            displayGradesByNIMRecursive(node->left, nim, found);
+            if (node->nim == nim) {
+                cout << "\nMata Kuliah: " << node->mataKuliah << endl;
+                cout << "Nilai: " << node->nilai << " (" << getGrade(node->nilai) << ")" << endl;
+                cout << "SKS: " << node->sks << endl;
+                cout << "------------------------" << endl;
+                found = true;
+            }
+            displayGradesByNIMRecursive(node->right, nim, found);
+        }
+    }
+    
     float calculateGPA(string nim) {
         Grade* current = root;
-        float totalNilai = 0;
-        int count = 0;
+        float totalGradePoints = 0;
+        int totalSKS = 0;
         
         while (current != NULL) {
             if (current->nim == nim) {
-                totalNilai += current->nilai;
-                count++;
+                totalGradePoints += getGradePoint(getGrade(current->nilai)) * current->sks;
+                totalSKS += current->sks;
             }
             if (nim < current->nim) {
                 current = current->left;
@@ -497,11 +608,24 @@ public:
             }
         }
         
-        if (count == 0) {
+        if (totalSKS == 0) {
             return 0;
         }
         
-        return totalNilai / count;
+        return totalGradePoints / totalSKS;
+    }
+    
+    void exportToFile(const string& filename) {
+        ofstream file(filename);
+        if (!file.is_open()) {
+            cout << "Error: Tidak dapat membuka file!" << endl;
+            return;
+        }
+        
+        file << "NIM,Mata Kuliah,Nilai,SKS\n";
+        exportToFileRecursive(root, file);
+        file.close();
+        cout << "Data nilai berhasil diekspor ke " << filename << endl;
     }
 };
 
@@ -553,7 +677,10 @@ void displayGradeMenu() {
     cout << "4. Tampilkan Nilai (Postorder)" << endl;
     cout << "5. Cari Nilai Mahasiswa" << endl;
     cout << "6. Hitung IPK" << endl;
-    cout << "7. Kembali ke Menu Utama" << endl;
+    cout << "7. Hapus Nilai" << endl;
+    cout << "8. Lihat Nilai berdasarkan NIM" << endl;
+    cout << "9. Ekspor Data Nilai" << endl;
+    cout << "10. Kembali ke Menu Utama" << endl;
     cout << "Pilihan: ";
 }
 
@@ -702,6 +829,7 @@ int main() {
                     cin >> subChoice;
                     
                     float gpa;
+                    int sks;
                     
                     switch(subChoice) {
                         case 1:
@@ -710,9 +838,11 @@ int main() {
                             cout << "Masukkan Mata Kuliah: ";
                             cin.ignore();
                             getline(cin, mataKuliah);
-                            cout << "Masukkan Nilai: ";
+                            cout << "Masukkan Nilai (0-100): ";
                             cin >> nilai;
-                            gradeTree.insert(nim, mataKuliah, nilai);
+                            cout << "Masukkan SKS: ";
+                            cin >> sks;
+                            gradeTree.insert(nim, mataKuliah, nilai, sks);
                             break;
                         case 2:
                             gradeTree.displayGradesInorder();
@@ -731,6 +861,7 @@ int main() {
                                 cout << "NIM: " << found->nim << endl;
                                 cout << "Mata Kuliah: " << found->mataKuliah << endl;
                                 cout << "Nilai: " << found->nilai << endl;
+                                cout << "SKS: " << found->sks << endl;
                             } else {
                                 cout << "Nilai tidak ditemukan" << endl;
                             }
@@ -740,18 +871,34 @@ int main() {
                             cin >> nim;
                             gpa = gradeTree.calculateGPA(nim);
                             if (gpa > 0) {
-                                cout << "IPK: " << gpa << endl;
+                                cout << "IPK: " << fixed << setprecision(2) << gpa << endl;
                             } else {
                                 cout << "Data nilai tidak ditemukan" << endl;
                             }
                             break;
                         case 7:
+                            cout << "Masukkan NIM: ";
+                            cin >> nim;
+                            cout << "Masukkan Mata Kuliah: ";
+                            cin.ignore();
+                            getline(cin, mataKuliah);
+                            gradeTree.deleteGrade(nim, mataKuliah);
+                            break;
+                        case 8:
+                            cout << "Masukkan NIM: ";
+                            cin >> nim;
+                            gradeTree.displayGradesByNIM(nim);
+                            break;
+                        case 9:
+                            gradeTree.exportToFile("nilai_mahasiswa.csv");
+                            break;
+                        case 10:
                             cout << "Kembali ke menu utama..." << endl;
                             break;
                         default:
                             cout << "Pilihan tidak valid!" << endl;
                     }
-                } while (subChoice != 7);
+                } while (subChoice != 10);
                 break;
                 
             case 5: // Daftar Mata Kuliah (Circular Linked List)
