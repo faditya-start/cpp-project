@@ -682,9 +682,56 @@ int main() {
                 } while (gradeChoice != 5);
                 break;
             }
-            case 5:
-                cout << "\nMenu Daftar Mata Kuliah" << endl;
+            case 5: {
+                CircularList courseList;
+                int courseChoice;
+                string kode, nama;
+                int sks;
+                
+                do {
+                    displayCourseMenu();
+                    cin >> courseChoice;
+                    
+                    switch(courseChoice) {
+                        case 1:
+                            cout << "Masukkan Kode MK: ";
+                            cin >> kode;
+                            cout << "Masukkan Nama MK: ";
+                            cin.ignore();
+                            getline(cin, nama);
+                            cout << "Masukkan SKS: ";
+                            cin >> sks;
+                            courseList.insertCourse(kode, nama, sks);
+                            break;
+                        case 2:
+                            courseList.displayCourses();
+                            break;
+                        case 3:
+                            cout << "Masukkan Kode MK yang dicari: ";
+                            cin >> kode;
+                            if (Course* found = courseList.searchCourse(kode)) {
+                                cout << "\nMata Kuliah ditemukan:" << endl;
+                                cout << "Kode: " << found->kode << endl;
+                                cout << "Nama: " << found->nama << endl;
+                                cout << "SKS: " << found->sks << endl;
+                            } else {
+                                cout << "Mata Kuliah tidak ditemukan" << endl;
+                            }
+                            break;
+                        case 4:
+                            cout << "Masukkan Kode MK yang akan dihapus: ";
+                            cin >> kode;
+                            courseList.deleteCourse(kode);
+                            break;
+                        case 5:
+                            cout << "Kembali ke menu utama..." << endl;
+                            break;
+                        default:
+                            cout << "Pilihan tidak valid!" << endl;
+                    }
+                } while (courseChoice != 5);
                 break;
+            }
             case 0:
                 cout << "\nTerima kasih!" << endl;
                 break;
