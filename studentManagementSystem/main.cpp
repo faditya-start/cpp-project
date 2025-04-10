@@ -25,6 +25,14 @@ struct Guidance {
     Guidance* next;
 };
 
+struct Grade {
+    string nim;
+    string mataKuliah;
+    float nilai;
+    Grade* left;
+    Grade* right;
+};
+
 class DoubleLinkedList {
 private:
     Student* head;
