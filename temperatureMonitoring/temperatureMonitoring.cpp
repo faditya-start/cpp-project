@@ -12,7 +12,7 @@ namespace Sensor {
     
     // Fungsi untuk menampilkan suhu dalam format Celsius
     void tampilkanSuhu(float suhu) {
-        cout << "Suhu saat ini: " << suhu << "°C" << endl;
+        cout << "Suhu saat ini: " << suhu << " C" << endl;
     }
 }
 
@@ -21,25 +21,25 @@ namespace Sensor {
 // mempengaruhi variabel asli, tidak perlu return value
 void updateSuhu(float& suhu, float selisih) {
     suhu += selisih;
-    cout << "Suhu diperbarui: " << suhu << "°C" << endl;
+    cout << "Suhu diperbarui: " << suhu << " C" << endl;
 }
 
 // Function overloading untuk menampilkan alert berdasarkan tipe data
 // Versi 1: Menerima parameter float dan menampilkan alert berdasarkan ambang batas
 void tampilkanAlert(float suhu) {
     if (suhu > 30.0) {
-        cout << "ALERT: Suhu terlalu tinggi! (" << suhu << "°C)" << endl;
+        cout << "ALERT: Suhu terlalu tinggi! (" << suhu << " C)" << endl;
     } else if (suhu < 18.0) {
-        cout << "ALERT: Suhu terlalu rendah! (" << suhu << "°C)" << endl;
+        cout << "ALERT: Suhu terlalu rendah! (" << suhu << " C)" << endl;
     } else {
-        cout << "Suhu dalam batas normal (" << suhu << "°C)" << endl;
+        cout << "Suhu dalam batas normal (" << suhu << " C)" << endl;
     }
 }
 
 // Versi 2: Menerima parameter int dan menampilkan pesan umum
 // Ini adalah contoh function overloading - nama sama, parameter berbeda
 void tampilkanAlert(int suhu) {
-    cout << "Pesan umum: Suhu saat ini adalah " << suhu << "°C" << endl;
+    cout << "Pesan umum: Suhu saat ini adalah " << suhu << " C" << endl;
 }
 
 int main() {
@@ -57,7 +57,7 @@ int main() {
     
     // Konversi ke Fahrenheit menggunakan fungsi inline dari namespace Sensor
     float suhuFahrenheit = Sensor::konversiKeFahrenheit(suhu);
-    cout << "Suhu dalam Fahrenheit: " << suhuFahrenheit << "°F" << endl;
+    cout << "Suhu dalam Fahrenheit: " << suhuFahrenheit << " F" << endl;
     
     // Menampilkan alert berdasarkan suhu (menggunakan function overloading)
     // Ini akan memanggil versi float dari fungsi tampilkanAlert
